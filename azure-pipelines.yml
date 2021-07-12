@@ -116,4 +116,3 @@ stages:
         inputs:
           targetPath: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'BuildResult'
-{"mode":"full","isActive":false}
