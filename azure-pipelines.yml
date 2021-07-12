@@ -32,7 +32,6 @@ variables:
   value: 'x64'
 - name: Analyse_Packages
   value: ${{parameters.Analyse_Packages}}
-- group: 'IIS_Secret'# variable group
 - name: SonarProjectKey
   value: ''
 - name: SonarProjectName
