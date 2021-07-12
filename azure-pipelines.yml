@@ -1,0 +1,126 @@
+name: '$(Date:yyyyMMdd).$(Rev:r)'
+
+trigger:
+- main
+pool:
+  vmImage: 'windows-latest'
+
+parameters:
+- name: Analyse_Packages
+  displayName: Analyse Packages
+  type: boolean
+  default: false
+- name: Run_Tests
+  displayName: Run Tests
+  type: boolean
+  default: false
+
+variables:
+- name: Source_Branch
+  value: $[replace(variables['Build.SourceBranch'],'refs/heads/','')]
+- name: Version_Number
+  value: '1.0.0'
+- name: Solution
+  value: '**/*.sln'
+- name: Build_Number
+  value: $[counter(variables['Version_Number'], 100)]
+- name: Build_Configuration
+  value: 'Release'
+- name: Build_Platform
+  value: 'Any CPU'
+- name: Build_Architecture
+  value: 'x64'
+- name: Analyse_Packages
+  value: ${{parameters.Analyse_Packages}}
+- group: 'IIS_Secret'# variable group
+- name: SonarProjectKey
+  value: ''
+- name: SonarProjectName
+  value: ''
+- name: SonarExclusions
+  value: '**/test/**'
+
+stages:
+  - stage: Build
+    displayName: Build eShopOnWeb
+    dependsOn:
+    jobs:
+    - job: Build
+      displayName: 'Build eShopOnWeb'
+      steps:
+          
+      - template: General/calculate-version.yml@core_templates
+        parameters:
+          VersionNumber: '$(Version_Number)'
+          BuildNumber: '$(Build_Number)'
+          BranchName: '$(Source_Branch)'
+      
+      - task: NuGetToolInstaller@1
+        displayName: 'NuGet Install'
+        
+      - task: NuGetAuthenticate@0
+        displayName: 'NuGet Authenticate'
+
+      - task: NuGetCommand@2
+        displayName: 'NuGet Solution Restore'
+        inputs:
+          command: 'restore'
+          restoreSolution: '**/*.sln'
+          feedsToUse: 'select'
+          vstsFeed: '780c2041-bb89-4053-a6e6-13d4c16ae672'
+
+      - task: SonarCloudPrepare@1
+        condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
+        inputs:
+          SonarCloud: 'SonarCloud'
+          organization: 'phlexglobal'
+          scannerMode: 'MSBuild'
+          projectKey: '$(SonarProjectKey)'
+          projectName: '$(SonarProjectName)'
+          projectVersion: '$(VersionNumber)'
+          extraProperties: |
+            sonar.exclusions=**/obj/**,**/*.dll
+            sonar.test.exclusions='$(SonarExclusions)'
+
+      - task: MSBuild@1
+        inputs:
+         solution: '**/*.sln'
+         platform: '$(Build_Platform)'
+         msbuildArguments: '/p:DeployOnBuild=true /p:SkipInvalidConfigurations=true /p:OutDir="$(System.DefaultWorkingDirectory)\publish_output"'
+
+      - task: SonarCloudAnalyze@1
+        displayName: 'Analyze with SonarCloud'
+        condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
+      - task: SonarCloudPublish@1
+        displayName: 'Publish Quality Gate Result'
+        condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
+
+      - task: CmdLine@2
+        displayName: 'Display files under Artifact directory'
+        inputs:
+          script: |
+            dir /b /s 
+                    
+ 
+      - task: ArchiveFiles@2
+        displayName: 'Archive eShopOnWebweb files'
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/_PublishedWebsites/eShopOnWebWeb'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/Web-v$(Version_Number).zip
+          replaceExistingArchive: true
+      - task: ArchiveFiles@2
+        displayName: 'Archive eShopOnWeb Jobs Engine files'
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/_PublishedWebsites/eShopOnWeb.Jobs.Engine'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/Engine-v$(Version_Number).zip
+          replaceExistingArchive: true
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'BuildResult'
+        
