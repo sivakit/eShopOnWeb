@@ -33,9 +33,9 @@ variables:
 - name: Analyse_Packages
   value: ${{parameters.Analyse_Packages}}
 - name: SonarProjectKey
-  value: ''
+  value: '1ada5392a2b0d447dba1bbf11a118533be1e7229'
 - name: SonarProjectName
-  value: ''
+  value: 'eShopOnWeb'
 - name: SonarExclusions
   value: '**/test/**'
 
