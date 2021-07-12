@@ -3,7 +3,7 @@ name: '$(Date:yyyyMMdd).$(Rev:r)'
 trigger:
 - main
 pool:
-  vmImage: 'windows-latest'
+  name: 'Self Agent'
 
 parameters:
 - name: Analyse_Packages
