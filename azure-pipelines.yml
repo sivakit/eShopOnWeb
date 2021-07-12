@@ -47,14 +47,7 @@ stages:
     jobs:
     - job: Build
       displayName: 'Build eShopOnWeb'
-      steps:
-          
-      - template: General/calculate-version.yml@core_templates
-        parameters:
-          VersionNumber: '$(Version_Number)'
-          BuildNumber: '$(Build_Number)'
-          BranchName: '$(Source_Branch)'
-      
+      steps:       
       - task: NuGetToolInstaller@1
         displayName: 'NuGet Install'
         
