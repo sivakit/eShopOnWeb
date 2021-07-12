@@ -84,3 +84,35 @@ stages:
         displayName: 'Analyze with SonarCloud'
         condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
  
+     - task: SonarCloudPublish@1
+        displayName: 'Publish Quality Gate Result'
+        condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
+
+      - task: CmdLine@2
+        displayName: 'Display files under Artifact directory'
+        inputs:
+          script: |
+            dir /b /s 
+                    
+ 
+      - task: ArchiveFiles@2
+        displayName: 'Archive eShopOnWebweb files'
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/_PublishedWebsites/eShopOnWebWeb'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/Web-v$(Version_Number).zip
+          replaceExistingArchive: true
+      - task: ArchiveFiles@2
+        displayName: 'Archive eShopOnWeb Jobs Engine files'
+        inputs:
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/_PublishedWebsites/eShopOnWeb.Jobs.Engine'
+          includeRootFolder: false
+          archiveType: zip
+          archiveFile: $(Build.ArtifactStagingDirectory)/Engine-v$(Version_Number).zip
+          replaceExistingArchive: true
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'BuildResult'
