@@ -98,7 +98,7 @@ stages:
       - task: ArchiveFiles@2
         displayName: 'Archive eShopOnWebweb files'
         inputs:
-          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/_PublishedWebsites/eShopOnWebWeb'
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output'
           includeRootFolder: false
           archiveType: zip
           archiveFile: $(Build.ArtifactStagingDirectory)/Web-v$(Version_Number).zip
@@ -106,7 +106,7 @@ stages:
       - task: ArchiveFiles@2
         displayName: 'Archive eShopOnWeb Jobs Engine files'
         inputs:
-          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/_PublishedWebsites/eShopOnWeb.Jobs.Engine'
+          rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/Web.exe'
           includeRootFolder: false
           archiveType: zip
           archiveFile: $(Build.ArtifactStagingDirectory)/Engine-v$(Version_Number).zip
