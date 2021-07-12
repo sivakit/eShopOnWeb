@@ -65,7 +65,7 @@ stages:
         condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
         inputs:
           SonarCloud: 'SonarCloud'
-          organization: 'phlexglobal'
+          organization: 'aaaa'
           scannerMode: 'MSBuild'
           projectKey: '$(SonarProjectKey)'
           projectName: '$(SonarProjectName)'
