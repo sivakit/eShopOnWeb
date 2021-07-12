@@ -33,7 +33,7 @@ variables:
 - name: Analyse_Packages
   value: ${{parameters.Analyse_Packages}}
 - name: SonarProjectKey
-  value: '1ada5392a2b0d447dba1bbf11a118533be1e7229'
+  value: 'aztraining23'
 - name: SonarProjectName
   value: 'eShopOnWeb'
 - name: SonarExclusions
@@ -65,7 +65,7 @@ stages:
         condition: and(succeeded(), eq(variables['Analyse_Packages'], true))
         inputs:
           SonarCloud: 'SonarCloud'
-          organization: 'aaaa'
+          organization: 'aztraining23'
           scannerMode: 'MSBuild'
           projectKey: '$(SonarProjectKey)'
           projectName: '$(SonarProjectName)'
