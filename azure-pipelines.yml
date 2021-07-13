@@ -42,7 +42,7 @@ variables:
   value: 'CICDPipeLineWeb'
 - name: WebPath
 #value: '%SystemDrive%\eShopOnWebweb\_PublishedWebsites\eShopOnWebWeb'
-  value: '%SystemDrive%\eShopOnWeb'
+  value: '%SystemDrive%\eShopWeb'
 - group: 'IIS_Secret'# variable group
 
 stages:
@@ -132,7 +132,7 @@ stages:
         environment:
           name: Dev
           resourceType: VirtualMachine
-          tags: Regops_web
+          tags: eShopWeb
         strategy:
           runOnce:
             deploy:
