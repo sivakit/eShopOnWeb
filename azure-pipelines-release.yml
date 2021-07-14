@@ -1,0 +1,100 @@
+name: '$(Date:yyyyMMdd).$(Rev:r)'
+
+trigger:
+- main
+pool:
+  name: 'Self Agent'
+
+parameters:
+- name: Analyse_Packages
+  displayName: Analyse Packages
+  type: boolean
+  default: false
+- name: Run_Tests
+  displayName: Run Tests
+  type: boolean
+  default: false
+
+variables:
+- name: Source_Branch
+  value: $[replace(variables['Build.SourceBranch'],'refs/heads/','')]
+- name: Version_Number
+  value: '1.0.0'
+- name: Solution
+  value: '**/*.sln'
+- name: Build_Number
+  value: $[counter(variables['Version_Number'], 100)]
+- name: Build_Configuration
+  value: 'Release'
+- name: Build_Platform
+  value: 'Any CPU'
+- name: Build_Architecture
+  value: 'x64'
+- name: Analyse_Packages
+  value: ${{parameters.Analyse_Packages}}
+- name: SonarProjectKey
+  value: 'eShopOnWeb1'
+- name: SonarProjectName
+  value: 'eShopOnWeb1'
+- name: SonarExclusions
+  value: '**/test/**'
+- name: WebsiteName
+  value: 'CICDPipeLineWeb'
+- name: WebPath
+#value: '%SystemDrive%\eShopOnWebweb\_PublishedWebsites\eShopOnWebWeb'
+  value: '%SystemDrive%\eShopWeb'
+- group: 'IIS_Secret'# variable group
+
+stages:
+  - stage: Deploy
+    displayName: Deploy to IIS
+    dependsOn: Build
+    jobs:      
+      - deployment: VMDeploy
+        displayName: eShopOnWeb
+        environment:
+          name: Dev
+          resourceType: VirtualMachine
+          tags: eShopWeb
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: DownloadBuildArtifacts@0
+                inputs:
+                  buildType: 'current'
+                  downloadType: 'specific'
+                  downloadPath: '$(System.ArtifactsDirectory)'
+              - task: CmdLine@2
+                displayName: 'Display files under Artifact directory'
+                inputs:
+                  script: |
+                    dir /b /s 
+                    dir $(System.ArtifactsDirectory)
+              - task: ExtractFiles@1
+                inputs:
+                  archiveFilePatterns: '**/*.zip'
+                  destinationFolder: '$(System.ArtifactsDirectory)/extract'
+                  cleanDestinationFolder: true
+                  overwriteExistingFiles: false
+
+              - task: IISWebAppManagementOnMachineGroup@0
+                displayName: 'Create App Pool and Website'
+                inputs:
+                  WebsiteName: '$(WebsiteName)'
+                  WebsitePhysicalPath: '%SystemDrive%\$(WebsiteName)'
+                  CreateOrUpdateAppPoolForWebsite: true
+                  AppPoolNameForWebsite: '$(WebsiteName)'
+                  AddBinding: True
+                  Bindings: '{"bindings":[{"protocol":"http","ipAddress":"All Unassigned","port":"84","hostname":"","sslThumbprint":"","sniFlag":false}]}'
+
+              - task: IISWebAppDeploymentOnMachineGroup@0
+                displayName: 'Deploying into Website: $(WebsiteName)'
+                inputs:
+                  WebSiteName: '$(WebsiteName)'
+                  Package: '$(System.ArtifactsDirectory)\BuildResult\Web*.zip'
+              - task: IISWebAppManagementOnMachineGroup@0
+                inputs:
+                  IISDeploymentType: 'IISWebsite'
+                  ActionIISWebsite: 'StartWebsite'
+                  StartStopWebsiteName: '$(WebsiteName)'
