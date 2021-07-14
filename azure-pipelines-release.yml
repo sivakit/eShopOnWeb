@@ -52,7 +52,7 @@ variables:
 stages:
   - stage: Deploy
     displayName: Deploy to IIS
-    dependsOn: Build
+    dependsOn: []
     jobs:      
       - deployment: VMDeploy
         displayName: eShopOnWeb
