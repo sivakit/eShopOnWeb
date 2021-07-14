@@ -1,6 +1,6 @@
 name: '$(Date:yyyyMMdd).$(Rev:r)'
 
-trigger: none
+#trigger: none
 resources:
   pipelines:
   - pipeline: eShopOnWeb_Siva_Release
@@ -9,9 +9,6 @@ resources:
     branches:
       include:
         - main        // name of branch on which pipeline need to trigger
-pool:
-  name: 'Self Agent'
-
 parameters:
 - name: Analyse_Packages
   displayName: Analyse Packages
