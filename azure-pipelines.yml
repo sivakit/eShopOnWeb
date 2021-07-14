@@ -3,7 +3,7 @@ name: '$(Date:yyyyMMdd).$(Rev:r)'
 trigger:
   branches:
     include:
-    - main
+    - soft
 pool:
   name: 'Self Agent'
 
@@ -113,12 +113,12 @@ stages:
           replaceExistingArchive: true
     #  - task: ArchiveFiles@2
     #    displayName: 'Archive eShopOnWeb Jobs Engine files'
-     #   inputs:
+    #    inputs:
     #      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/publish_output/Web.exe'
     #      includeRootFolder: false
-     #     archiveType: zip
-      #    archiveFile: $(Build.ArtifactStagingDirectory)/Engine-v$(Version_Number).zip
-      #    replaceExistingArchive: true
+    #      archiveType: zip
+    #      archiveFile: $(Build.ArtifactStagingDirectory)/Engine-v$(Version_Number).zip
+    #      replaceExistingArchive: true
 
       - task: PublishBuildArtifacts@1
         inputs:
