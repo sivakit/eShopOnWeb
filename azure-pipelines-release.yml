@@ -1,7 +1,14 @@
 name: '$(Date:yyyyMMdd).$(Rev:r)'
 
-trigger:
-- main
+trigger: none // add this trigger value to none 
+resources:
+  pipelines:
+  - pipeline: eShopOnWeb_Release // any arbitrary name
+    source: eShopOnWeb_Build    // name of the pipeline shown on azure UI portal
+    trigger:
+    branches:
+      include:
+        - dummy_branch        // name of branch on which pipeline need to trigger
 pool:
   name: 'Self Agent'
 
