@@ -8,7 +8,7 @@ resources:
     trigger:
     branches:
       include:
-        - dummy_branch        // name of branch on which pipeline need to trigger
+        - main        // name of branch on which pipeline need to trigger
 pool:
   name: 'Self Agent'
 
