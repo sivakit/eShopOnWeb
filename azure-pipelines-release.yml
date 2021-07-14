@@ -6,8 +6,8 @@ resources:
   - pipeline: eShopOnWeb_Siva_Release
     source: eShopOnWeb_Build
     trigger:
-    branches:
-      include:
+      branches:
+        include:
         - main
 parameters:
 - name: Analyse_Packages
