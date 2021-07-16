@@ -7,7 +7,7 @@ resources:
     trigger:
       branches:
         include:
-        - soft
+        - refs/heads/soft
 parameters:
 - name: Analyse_Packages
   displayName: Analyse Packages
