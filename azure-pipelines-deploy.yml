@@ -1,5 +1,5 @@
 name: '$(Date:yyyyMMdd).$(Rev:r)'
-#trigger: none
+trigger: none
 resources:
   pipelines:
   - pipeline: eShopOnWeb_Deploy_soft
