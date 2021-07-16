@@ -1,5 +1,4 @@
 name: '$(Date:yyyyMMdd).$(Rev:r)'
-
 trigger:
   branches:
     include:
