@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: eShopOnWeb_Siva_Release
-    source: eShopOnWeb_Build
+    source: eShopOnWeb_Build_soft
     trigger:
       branches:
         include:
