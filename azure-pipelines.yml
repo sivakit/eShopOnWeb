@@ -3,7 +3,7 @@ name: '$(Date:yyyyMMdd).$(Rev:r)'
 trigger:
   branches:
     include:
-    - soft
+    - refs/heads/soft
 pool:
   name: 'Self Agent'
 
