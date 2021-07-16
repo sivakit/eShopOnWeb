@@ -2,7 +2,7 @@ name: '$(Date:yyyyMMdd).$(Rev:r)'
 trigger: none
 resources:
   pipelines:
-  - pipeline: eShopOnWeb_Siva_Release
+  - pipeline: eShopOnWeb_Deploy_soft
     source: eShopOnWeb_Build_soft
     trigger:
       branches:
